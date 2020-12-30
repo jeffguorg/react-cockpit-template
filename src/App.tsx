@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Alert, Card, CardTitle, CardBody } from '@patternfly/react-core';
+
+interface AppProp {}
+
+interface AppState {
+  hostname?: string;
 }
 
-export default App;
+
+export default class App extends React.Component<AppProp, AppState> {
+  constructor(prop: AppProp) {
+    super(prop);
+
+    this.state = {};
+  }
+  mounted() {
+    cockpit.file('/etc/hostname').watch((content: string) => {
+      this.setState({ hostname: content.trim() });
+  });
+  }
+  render() {
+    let _ = cockpit.gettext;
+    return (
+      <Card>
+          <CardTitle>Starter Kit</CardTitle>
+          <CardBody>
+              <Alert
+                  variant="info"
+                  title={ cockpit.format(_("Running on $0"), this.state.hostname) }
+              />
+          </CardBody>
+      </Card>
+    )
+  }
+}
+
