@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, Card, CardTitle, CardBody } from '@patternfly/react-core';
