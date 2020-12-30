@@ -249,4 +249,6 @@ namespace Cockpit {
     };
 };
 
-declare var cockpit: Cockpit.Cockpit;
+interface Window {
+    cockpit?: Cockpit.Cockpit;
+}

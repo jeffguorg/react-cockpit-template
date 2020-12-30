@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.css';
 
+import "@patternfly/patternfly/patternfly.css";
 import { Alert, Card, CardTitle, CardBody } from '@patternfly/react-core';
 
-interface AppProp {}
+interface AppProp { }
 
 interface AppState {
   hostname?: string;
@@ -16,22 +17,40 @@ export default class App extends React.Component<AppProp, AppState> {
 
     this.state = {};
   }
-  mounted() {
-    cockpit.file('/etc/hostname').watch((content: string) => {
-      this.setState({ hostname: content.trim() });
-  });
+  componentDidMount() {
+    if (window.cockpit) {
+      console.log(window.cockpit.file('/etc/hostname').read().then((content) => {
+        this.setState({
+          hostname: content.trim(),
+        })
+      }))
+    }
   }
   render() {
-    let _ = cockpit.gettext;
-    return (
-      <Card>
+    if(window.cockpit) {
+      let _ = window.cockpit.gettext;
+      return (
+        <Card>
           <CardTitle>Starter Kit</CardTitle>
           <CardBody>
-              <Alert
-                  variant="info"
-                  title={ cockpit.format(_("Running on $0"), this.state.hostname) }
-              />
+            <Alert
+              variant="info"
+              title={window.cockpit.format(_("Running on $0"), this.state.hostname)}
+            />
           </CardBody>
+        </Card>
+      )
+    }
+
+    return (
+      <Card>
+        <CardTitle>Starter Kit</CardTitle>
+        <CardBody>
+          <Alert
+            variant="info"
+            title="Cockpit not found"
+          />
+        </CardBody>
       </Card>
     )
   }
